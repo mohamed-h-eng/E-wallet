@@ -1,7 +1,6 @@
 # 💸 Secure Money Transfer & Chat System
 
-A full-stack web application that allows users to securely transfer money between accounts and communicate through an integrated real-time chat system. This project simulates a simplified digital wallet environment — suitable as a junior developer portfolio project.
-
+A full-stack web application that allows users to securely transfer money between accounts and communicate through an integrated real-time chat system. This project simulates a simplified digital wallet environment
 ---
 
 ## 📌 Features
