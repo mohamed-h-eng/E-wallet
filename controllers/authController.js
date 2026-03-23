@@ -33,7 +33,7 @@ const loginController = async (req,res)=>{
     try{
         //check if user not found
         const{email,password} = req.body;
-        let user = await User.findOne({email})
+        const user = await User.findOne({email})
         if(!user) {
             return res.status(201).json({
                 message:"User Is Not Registered",
@@ -41,10 +41,11 @@ const loginController = async (req,res)=>{
             })
         }
         //login user
-        user = await bcrypt.compare(password,user.password)
-        if(!user){
+        const checkPassword = await bcrypt.compare(password,user.password)
+        if(!checkPassword){
             return res.status(400).json({message:"Incorrect password"})
         }
+        // return console.log(user);
         const token = jwt.sign(
             {
                 id:user._id,
@@ -61,42 +62,13 @@ const loginController = async (req,res)=>{
         })
     }catch(error){
         res.status(400).json({
-            message:"Invalid Login"
+            message:"Invalid Login",
+            data:error.message
         })
     }
 }
 
-//send money
-const sendController = async (req,res)=>{
-    try{
-        //validate user
-        
-        // // const{name, email} = req.body;
-        // let user = await User.findOne({email})
-        // if(!user) {
-        //     return res.status(201).json({
-        //         message:"User Is Not Registered",
-        //         data:""
-        //     })
-        // }
-        
-        //validate receiver
-
-        //validate not self transfer
-        // check daily/transaction limit
-        // check transaction amount limit
-        // check suffecient balance
-    }catch(error){
-        res.status(400).json({
-            message:"Sending Failed"
-        })
-    }
-}
-//view transactions
-
-//view account
 module.exports = {
     registerController,
-    loginController,
-    sendController
+    loginController
 }
