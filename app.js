@@ -12,9 +12,11 @@ async function DBconnection(){
     try{
         await mongoose.connect(process.env.DB_URL)
         console.log("db connected")
+        return true
     }catch(error){
         console.log("db disconnected")
         console.log(error.message)
+        return false
     }
 }
 const authRoutes = require("./routes/authRoutes")

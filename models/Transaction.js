@@ -2,12 +2,12 @@ const mongoose = require("mongoose")
 
 const transactionSchema = new mongoose.Schema({
     sender_iban:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"User"
+        type:String,
+        required:true
     },
     receiver_iban:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"User"
+        type:String,
+        required:true
     },
     amount:{
         type:Number,
@@ -16,7 +16,7 @@ const transactionSchema = new mongoose.Schema({
     },
     type:{
         type:String,
-        enum:["deposit","withdraw"],
+        enum:["deposit","withdraw","transfer"],
         required:true
     },
     note:{
