@@ -1,19 +1,17 @@
 require("dotenv").config()
 const Account = require("../models/Account")
 const crypto = require('crypto');
-
+const User = require("../models/User")
 const createController = async(req,res)=>{
     try{
-        //validate user token by headers
         const {id} = req.user
         const isAccount = await Account.findOne({user_id:id}).populate("user_id")
         if(isAccount){
             return res.status(200).json({
-                msg:"User Already Has Account",
+                message:"User Already Has Account",
                 data:isAccount
             })
         }
-        // generate iban
         const serial = crypto.randomBytes(10).toString('hex').toUpperCase();
         const iban = "EG00"+serial;
         await Account.create({
@@ -21,7 +19,7 @@ const createController = async(req,res)=>{
             iban
         })
         const createdAccount = await Account.findOne({user_id:id}).populate("user_id")
-        res.status(201).json({msg:"Account Created Successfully",data:createdAccount})
+        res.status(201).json({message:"Account Created Successfully",data:createdAccount})
     }catch(error){
         return res.status(400).json({
             message:"Account createion failed",
@@ -30,20 +28,18 @@ const createController = async(req,res)=>{
     }
 }
 
-//view account
 const readController = async(req,res)=>{
     try{
-        //validate user token by headers
         const {id} = req.user
         const isAccount = await Account.findOne({user_id:id}).populate("user_id")
         if(!isAccount){
             return res.status(200).json({
-                msg:"User Account Not Found",
+                message:"User Account Not Found",
                 data:isAccount
             })
         }
         const account = await Account.findOne({user_id:id}).populate("user_id")
-        res.status(200).json({msg:"Account Found Successfully",data:account})
+        res.status(200).json({message:"Account Found Successfully",data:account})
     }catch(error){
         return res.status(400).json({
             message:"Account retreive failed",
@@ -52,7 +48,39 @@ const readController = async(req,res)=>{
     }
 }
 
+const uploadPhotoController = async (req, res) => {
+  try {
+
+    if (!req.file)
+      return res.status(400).json({ message: 'No image uploaded' });
+
+    const user = req.user
+
+    if (user.photo) {
+      const oldPath = path.join(process.cwd(), user.photo);
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+    }
+
+    const photoUrl = `uploads/profiles/${req.file.filename}`;
+
+    const updatedUser = await Account.findOneAndUpdate(
+      {user_id:user.id},
+      { $set: { photo: photoUrl } },
+      { returnDocument: 'after' }
+    );
+
+    res.status(200).json({ 
+      message: 'Photo updated successfully',
+      photo:   updatedUser.photo,
+    });
+
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to upload photo', error: err.message });
+  }
+};
+
 module.exports = {
     createController,
-    readController
+    readController,
+    uploadPhotoController
 }

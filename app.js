@@ -5,8 +5,13 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const bcrypt = require("bcrypt")
 const app = express()
 const PORT = process.env.PORT || 3000
+const cors = require("cors")
+const path = require('path');
 
+app.use(cors())
 app.use(express.json())
+
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 async function DBconnection(){
     try{
@@ -56,7 +61,7 @@ async function CreateAdmin(isConnected){
             return console.log("Admin Already Registered")
         }
     }catch(error){
-        console.log({msg:"Error Creating Admin",data:error.message})
+        console.log({message:"Error Creating Admin",data:error.message})
     }
 }
 app.listen(PORT,(req,res)=>{

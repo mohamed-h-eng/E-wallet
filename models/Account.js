@@ -17,6 +17,14 @@ const accountSchema = new mongoose.Schema({
         type:String,
         enum:["active","frozen","closed"],
         default:"active"
+    },
+    photo:{
+        type:String,
+        default:null
+    },
+    photo_hash:{
+        type:String,
+        default:null
     }
 },{timestamps:true})
 
